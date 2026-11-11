@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serafine Cerâmicas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Variáveis de cores para o Rosa Salmão */
+        :root {
+            --salmon: #FA8072;
+            --salmon-dark: #E97062;
+            --salmon-rgba-hover: rgba(250, 128, 114, 0.15); /* Fundo sutil com RGBA */
+            --salmon-rgba-overlay: rgba(250, 128, 114, 0.3); /* Overlay de imagens com RGBA */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FFFFFF;
+            color: #333333;
+        }
+
+        h1, h2, h3, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* 
+         * REGRAS DE OPACIDADE E FEEDBACK VISUAL 
+         */
+
+        /* 1. Botão de Compra: Altera apenas a opacidade ao passar o mouse */
+        .btn-compra {
+            background-color: var(--salmon);
+            color: #FFFFFF;
+            transition: opacity 0.3s ease;
+        }
+        .btn-compra:hover {
+            opacity: 0.7; /* Feedback visual rápido usando opacidade */
+        }
+
+        /* 2. Botão Desabilitado: Visual "apagado" e cursor bloqueado */
+        .btn-desabilitado {
+            background-color: #cccccc;
+            color: #666666;
+            opacity: 0.5; /* Visual apagado */
+            cursor: not-allowed;
+            pointer-events: none; /* Impede o clique */
+        }
+
+        /* 3. Botões secundários e Cards: Usam RGBA para alterar a cor de fundo suavemente */
+        .btn-secundario {
+            background-color: transparent;
+            border: 1px solid var(--salmon);
+            color: var(--salmon);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .btn-secundario:hover {
+            background-color: var(--salmon-rgba-hover); /* Uso de RGBA */
+        }
+
+        /* 4. Imagens dos itens (Produto): Aplica overlay RGBA por cima ao passar o mouse */
+        .produto-imagem-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        .produto-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0);
+            transition: background-color 0.4s ease;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .produto-card:hover .produto-overlay {
+            background-color: var(--salmon-rgba-overlay); /* Efeito RGBA na imagem */
+        }
+        .produto-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .produto-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(250, 128, 114, 0.1);
+        }
+
+        /* Suavização de imagens */
+        .img-zoom {
+            transition: transform 0.5s ease;
+        }
+        .produto-card:hover .img-zoom {
+            transform: scale(1.05);
+        }
+
+        /* 
+         * NOVAS INTERAÇÕES AO PASSAR O MOUSE (:hover)
+         */
+
+        /* Indicador animado sob os links do menu */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--salmon);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Efeito interativo nos ícones do cabeçalho */
+        .icon-btn {
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        .icon-btn:hover {
+            transform: scale(1.15);
+            color: var(--salmon);
+        }
+
+        /* Efeito de elevação suave nos links do rodapé */
+        .footer-link {
+            display: inline-block;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        .footer-link:hover {
+            transform: translateX(4px);
+            color: var(--salmon);
+        }
+    </style>
+</head>
+<body class="antialiased flex flex-col min-h-screen selection:bg-[#FA8072] selection:text-white">
+
+    <!-- Cabeçalho / Navbar -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer group">
+                    <span class="font-serif text-3xl text-[#FA8072] font-semibold tracking-wide transition-transform duration-300 group-hover:scale-105">Serafine</span>
+                </div>
+                
+                <!-- Navegação Desktop -->
+                <nav class="hidden md:flex space-x-10">
+                    <a href="#" class="nav-link text-gray-600 hover:text-[#FA8072] transition-colors duration-200 text-sm font-medium">Início</a>
+                    <a href="#" class="nav-link text-gray-600 hover:text-[#FA8072] transition-colors duration-200 text-sm font-medium">Coleções</a>
+                    <a href="#" class="nav-link text-gray-600 hover:text-[#FA8072] transition-colors duration-200 text-sm font-medium">Sobre Nós</a>
+                    <a href="#" class="nav-link text-gray-600 hover:text-[#FA8072] transition-colors duration-200 text-sm font-medium">Contato</a>
+                </nav>
+
+                <!-- Ícones (Busca, Carrinho) -->
+                <div class="flex items-center space-x-6">
+                    <button class="icon-btn text-gray-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </button>
+                    <button class="icon-btn text-gray-400 relative">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                        <span class="absolute -top-1 -right-2 bg-[#FA8072] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">2</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative bg-[#FFF9F8] overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="relative z-10 pb-8 bg-[#FFF9F8] sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32 pt-16 px-4 sm:px-6 lg:px-8">
+                <main class="mt-10 mx-auto max-w-7xl sm:mt-12 md:mt-16 lg:mt-20 xl:mt-28">
+                    <div class="sm:text-center lg:text-left">
+                        <h1 class="text-4xl tracking-tight font-serif text-gray-900 sm:text-5xl md:text-6xl">
+                            <span class="block">Cerâmica artesanal</span>
+                            <span class="block text-[#FA8072] italic mt-2">feita com alma</span>
+                        </h1>
+                        <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                            Peças exclusivas, moldadas à mão para trazer elegância, textura e vida para o seu lar. Descubra a nova coleção de outono.
+                        </p>
+                        <div class="mt-8 sm:flex sm:justify-center lg:justify-start gap-4">
+                            <div class="rounded-md shadow">
+                                <button class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md btn-compra hover:-translate-y-0.5 transition-transform duration-200 md:py-4 md:text-lg">
+                                    Ver Coleção
+                                </button>
+                            </div>
+                            <div class="mt-3 sm:mt-0">
+                                <button class="w-full flex items-center justify-center px-8 py-3 rounded-md text-base font-medium btn-secundario hover:-translate-y-0.5 transition-transform duration-200 md:py-4 md:text-lg">
+                                    Nossa História
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+        <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 overflow-hidden group">
+            <img class="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full transition-transform duration-700 ease-out group-hover:scale-105" src="https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=1000&q=80" alt="Vasos de cerâmica artesanal">
+        </div>
+    </section>
+
+    <!-- Seção de Produtos -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-serif text-gray-900 sm:text-4xl">Destaques da Loja</h2>
+            <div class="mt-4 h-1 w-20 bg-[#FA8072] mx-auto rounded"></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-8">
+            
+            <!-- Produto 1 (Disponível) -->
+            <div class="produto-card group flex flex-col justify-between bg-white rounded-xl p-4">
+                <div>
+                    <div class="produto-imagem-container aspect-w-1 aspect-h-1 w-full bg-gray-100 rounded-lg xl:aspect-w-7 xl:aspect-h-8">
+                        <div class="produto-overlay"></div>
+                        <img src="https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=600&q=80" alt="Vaso Terra" class="img-zoom w-full h-64 object-center object-cover">
+                    </div>
+                    <h3 class="mt-4 text-lg font-medium text-gray-900 font-serif">Vaso Terracota</h3>
+                    <p class="mt-1 text-sm text-gray-500">Design minimalista</p>
+                    <p class="mt-2 text-xl font-semibold text-gray-900">R$ 149,90</p>
+                </div>
+                <button class="mt-6 w-full py-2 px-4 rounded-md font-medium text-sm btn-compra">
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+
+            <!-- Produto 2 (Disponível) -->
+            <div class="produto-card group flex flex-col justify-between bg-white rounded-xl p-4">
+                <div>
+                    <div class="produto-imagem-container aspect-w-1 aspect-h-1 w-full bg-gray-100 rounded-lg xl:aspect-w-7 xl:aspect-h-8">
+                        <div class="produto-overlay"></div>
+                        <img src="./img/download (4).jpg" alt="Conjunto Pratos Salmão" class="img-zoom w-full h-64 object-center object-cover">
+                    </div>
+                    <h3 class="mt-4 text-lg font-medium text-gray-900 font-serif">Conjunto Pratos Salmão</h3>
+                    <p class="mt-1 text-sm text-gray-500">Kit com 4 unidades</p>
+                    <p class="mt-2 text-xl font-semibold text-gray-900">R$ 289,00</p>
+                </div>
+                <button class="mt-6 w-full py-2 px-4 rounded-md font-medium text-sm btn-compra">
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+
+            <!-- Produto 3 (Esgotado - Botão Desabilitado) -->
+            <div class="produto-card group flex flex-col justify-between bg-white rounded-xl p-4">
+                <div>
+                    <div class="produto-imagem-container aspect-w-1 aspect-h-1 w-full bg-gray-100 rounded-lg xl:aspect-w-7 xl:aspect-h-8 relative">
+                        <div class="produto-overlay"></div>
+                        <span class="absolute top-2 right-2 bg-gray-800 text-white text-xs font-bold px-2 py-1 rounded z-20">ESGOTADO</span>
+                        <img src="https://images.unsplash.com/photo-1616627547584-bf28cee262db?auto=format&fit=crop&w=600&q=80" alt="Jarra de Cerâmica" class="img-zoom w-full h-64 object-center object-cover opacity-80">
+                    </div>
+                    <h3 class="mt-4 text-lg font-medium text-gray-900 font-serif">Jarra Branca Clássica</h3>
+                    <p class="mt-1 text-sm text-gray-500">Edição limitada</p>
+                    <p class="mt-2 text-xl font-semibold text-gray-900">R$ 199,90</p>
+                </div>
+                <!-- Exemplo de botão apagado/desabilitado pela opacidade -->
+                <button class="mt-6 w-full py-2 px-4 rounded-md font-medium text-sm btn-desabilitado">
+                    Indisponível
+                </button>
+            </div>
+
+            <!-- Produto 4 (Disponível) -->
+            <div class="produto-card group flex flex-col justify-between bg-white rounded-xl p-4">
+                <div>
+                    <div class="produto-imagem-container aspect-w-1 aspect-h-1 w-full bg-gray-100 rounded-lg xl:aspect-w-7 xl:aspect-h-8">
+                        <div class="produto-overlay"></div>
+                        <img src="./img/download (5).jpg" alt="Tigela Rústica" class="img-zoom w-full h-64 object-center object-cover">
+                    </div>
+                    <h3 class="mt-4 text-lg font-medium text-gray-900 font-serif">Tigela Rústica</h3>
+                    <p class="mt-1 text-sm text-gray-500">Perfeita para sopas</p>
+                    <p class="mt-2 text-xl font-semibold text-gray-900">R$ 89,90</p>
+                </div>
+                <button class="mt-6 w-full py-2 px-4 rounded-md font-medium text-sm btn-compra">
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Banner Informativo -->
+    <section class="bg-[#FFF9F8] py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-2xl font-serif text-[#FA8072] mb-4">Feito à mão, com amor</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+                Cada peça da Serafine é única. Nossos artesãos dedicam tempo e paixão em cada curva, utilizando argilas selecionadas e esmaltes não tóxicos.
+            </p>
+            <button class="mt-8 px-8 py-3 rounded-md text-base font-medium btn-secundario">
+                Conheça o Processo
+            </button>
+        </div>
+    </section>
+
+    <!-- Seção Demonstrativa: Opacidade vs. RGBA e Legenda Fade-in -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        <!-- 1. Comparação Lado a Lado: opacity vs. rgba() -->
+        <div class="mb-16">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-serif text-gray-900">Opacidade vs. RGBA no Fundo</h2>
+                <p class="text-gray-500 mt-2 text-sm sm:text-base">Veja como o <code class="bg-gray-100 px-2 py-0.5 rounded text-xs font-mono text-gray-700">opacity</code> afeta o texto e elementos filhos, enquanto o <code class="bg-gray-100 px-2 py-0.5 rounded text-xs font-mono text-gray-700">rgba()</code> afeta apenas a cor de fundo.</p>
+                <div class="mt-4 h-1 w-20 bg-[#FA8072] mx-auto rounded"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                
+                <!-- Card 1: opacity: 0.4 -->
+                <div class="flex flex-col items-center group">
+                    <span class="text-xs font-semibold tracking-wider uppercase text-gray-500 mb-3">Com <code class="text-red-500 font-mono">opacity: 0.4</code></span>
+                    <div class="w-full bg-[#FA8072] text-white rounded-xl p-6 text-center shadow-md opacity-40 select-none transition-all duration-300 group-hover:opacity-60 group-hover:-translate-y-1">
+                        <span class="text-xs uppercase tracking-widest font-semibold block mb-1">Herança de Opacidade</span>
+                        <h3 class="font-serif text-2xl font-semibold mb-2">Texto com Opacidade</h3>
+                        <p class="text-sm">Observe como este texto também fica desbotado/transparente, pois a propriedade <code class="font-mono bg-black/20 px-1 rounded">opacity</code> é herdada por todo o container e seus filhos.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: rgba() apenas no fundo -->
+                <div class="flex flex-col items-center group">
+                    <span class="text-xs font-semibold tracking-wider uppercase text-[#FA8072] mb-3">Com <code class="text-green-600 font-mono">rgba(250, 128, 114, 0.4)</code></span>
+                    <div class="w-full text-gray-900 rounded-xl p-6 text-center shadow-md border border-[#FA8072]/30 select-none transition-all duration-300 group-hover:-translate-y-1 group-hover:border-[#FA8072]" style="background-color: rgba(250, 128, 114, 0.4);">
+                        <span class="text-xs uppercase tracking-widest font-semibold block mb-1 text-gray-700">Apenas o Fundo</span>
+                        <h3 class="font-serif text-2xl font-semibold mb-2">Texto 100% Nítido</h3>
+                        <p class="text-sm text-gray-800">Aqui, apenas a cor de fundo tem 40% de opacidade através do <code class="font-mono bg-white/40 px-1 rounded">rgba()</code>, mantendo este texto totalmente legível e bem definido.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 2. Legenda com Efeito Fade-in sobre a Imagem -->
+        <div class="max-w-4xl mx-auto pt-8 border-t border-gray-200">
+            <div class="text-center mb-8">
+                <h3 class="text-2xl font-serif text-gray-900">Legenda com Efeito Fade-in</h3>
+                <p class="text-gray-500 mt-1 text-sm">Passe o mouse ou toque na imagem para revelar a legenda através de uma transição de opacidade.</p>
+            </div>
+
+            <div class="relative max-w-2xl mx-auto overflow-hidden rounded-2xl shadow-xl group cursor-pointer" tabIndex="0">
+                <!-- Imagem Principal -->
+                <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=1000&q=80" alt="Artesão moldando vaso de cerâmica" class="w-full h-80 sm:h-96 object-cover transition-transform duration-700 ease-out group-hover:scale-105 group-focus-visible:scale-105">
+
+                <!-- Overlay escuro e Legenda com Opacidade (Fade-in) -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 sm:p-8 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-500 ease-in-out">
+                    <span class="text-[#FA8072] text-xs font-semibold tracking-widest uppercase mb-1">Processo Manual</span>
+                    <h4 class="text-white text-xl sm:text-2xl font-serif font-medium mb-2">A Arte da Moldagem</h4>
+                    <p class="text-gray-200 text-sm max-w-lg leading-relaxed">
+                        Cada curva é desenhada pacientemente no torno de oleiro. Esta legenda utiliza <code class="font-mono bg-white/20 px-1 rounded text-white">opacity: 0</code> padrão e transita suavemente para <code class="font-mono bg-white/20 px-1 rounded text-white">opacity: 1</code> no hover.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 mt-auto">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <span class="font-serif text-2xl text-[#FA8072] font-semibold">Serafine</span>
+                    <p class="mt-4 text-gray-500 text-sm max-w-sm">
+                        Trazendo a beleza da cerâmica artesanal para o seu dia a dia. Transforme sua casa com peças autênticas.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase">Loja</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#" class="footer-link text-sm text-gray-500">Todos os Produtos</a></li>
+                        <li><a href="#" class="footer-link text-sm text-gray-500">Lançamentos</a></li>
+                        <li><a href="#" class="footer-link text-sm text-gray-500">Kits Promocionais</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase">Atendimento</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#" class="footer-link text-sm text-gray-500">Contato</a></li>
+                        <li><a href="#" class="footer-link text-sm text-gray-500">Frete e Entregas</a></li>
+                        <li><a href="#" class="footer-link text-sm text-gray-500">Trocas e Devoluções</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-sm text-gray-400">
+                    &copy; 2026 Serafine Cerâmicas. Todos os direitos reservados.
+                </p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-[#FA8072] transition-transform duration-200 hover:scale-125">
+                        <span class="sr-only">Instagram</span>
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" /></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
